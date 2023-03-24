@@ -27,7 +27,7 @@ def get_payday(year, month):
     while counter != 3:
         if reminder_date.weekday() < 5 and reminder_date not in holidays.Estonia(year):
             counter += 1
-        if reminder_date.weekday() > 5 and counter == 3:
+        if reminder_date.weekday() > 4 and counter == 3:
             counter -= 1
         reminder_date -= datetime.timedelta(days=1)
 
