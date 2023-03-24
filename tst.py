@@ -5,7 +5,7 @@ import argparse
 
 
 def get_payday(year, month):
-    """Leiab palgamaksmise kuupäeva ja meeldetuletuse kuupäeva antud aasta ja kuu kohta."""
+    """Get pay date and reminder date for given month in given year."""
     # Find 10nth day of given year and month.
     pay_date = datetime.date(year, month, 10)
 
@@ -19,24 +19,24 @@ def get_payday(year, month):
         pay_date -= datetime.timedelta(days=3)
 
     # Find the reminder date - 3 workdays before pay date.
-    reminder_date = pay_date - datetime.timedelta(days=3)
-    reminder_date_weekday_as_int = reminder_date.weekday()
-    if reminder_date_weekday_as_int == 5 or (reminder_date in holidays.Estonia(year) and 6 >reminder_date_weekday_as_int > 0) :
-        reminder_date -= datetime.timedelta(days=1)
-    elif reminder_date_weekday_as_int == 6:
-        reminder_date -= datetime.timedelta(days=2)
-    elif reminder_date_weekday_as_int == 0 and reminder_date in holidays.Estonia(year):
-        reminder_date -= datetime.timedelta(days=3)
+    if 1 >= pay_date.weekday() >= 0:
+        reminder_date = pay_date - datetime.timedelta(days=6)
+    elif (pay_date.weekday() - 4) == 0 and pay_date in holidays.Estonia(year):
+        reminder_date = pay_date - datetime.timedelta(days=7)
+    elif (pay_date.weekday() - 4) == 1 and pay_date in holidays.Estonia(year):
+        reminder_date = pay_date - datetime.timedelta(days=5)
+    else:
+        reminder_date = pay_date - datetime.timedelta(days=4)
     return pay_date, reminder_date
 
 
 def write_csv_file(year):
-    """Kirjutab CSV-faili, mis sisaldab palgamaksmise kuupäeva ja meeldetuletuse kuupäeva iga kuu kohta antud aasta jaoks."""
+    """Write contents to csv file."""
     with open(f"{year}.csv", "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        # Kirjutage päis
-        writer.writerow(["Kuu", "Palgamaksmise kuupäev", "Meeldetuletuse kuupäev"])
-        # Kirjutage andmed iga kuu kohta
+        # Write header.
+        writer.writerow(["Month", "Pay Date", "Reminder Date"])
+        # Get pay date and reminder date for each month and write it to file.
         for month in range(1, 13):
             pay_date, reminder_date = get_payday(year, month)
             writer.writerow([datetime.date(year, month, 1).strftime("%B"), pay_date.strftime("%d.%m.%Y"), reminder_date.strftime("%d.%m.%Y")])
@@ -44,15 +44,14 @@ def write_csv_file(year):
 
 def main():
     # Looge argumentide parser, et lugeda sisse aastaarv
-    parser = argparse.ArgumentParser(description="Genereerib Spin TEKi palgamaksmise kuupäevade tabeli antud aasta jaoks.")
+    parser = argparse.ArgumentParser(description="Generate payday dates for Spintek.")
     parser.add_argument("year", type=int, help="Aastaarv")
 
     args = parser.parse_args()
 
-    # Kirjutage CSV-fail
+    # Write to csv file.
     write_csv_file(args.year)
 
 
 if __name__ == "__main__":
-    print(get_payday(2024, 1))
-    #main()
+    main()
