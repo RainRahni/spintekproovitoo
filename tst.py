@@ -16,7 +16,7 @@ def get_payday(year, month):
     # Find the reminder date = 3 workdays before pay date.
     reminder_date = pay_date - datetime.timedelta(days=1)
     # Counter for work days.
-    counter = 3
+    counter = 2
     while counter != 0:
         # Subtract 1 day from remainder date.
         reminder_date -= datetime.timedelta(days=1)
