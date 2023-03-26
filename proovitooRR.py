@@ -48,7 +48,7 @@ def write_csv_file(year):
 def main():
     # Create argument parser.
     parser = argparse.ArgumentParser(description="Generate payday dates for Spintek.")
-    parser.add_argument("year", type=int, help="Aastaarv")
+    parser.add_argument("year", type=int)
 
     args = parser.parse_args()
 
